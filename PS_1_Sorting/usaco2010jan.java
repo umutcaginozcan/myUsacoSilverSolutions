@@ -36,7 +36,6 @@ public class usaco2010jan {
     }
 
     public static int calculate_distance(int y, int x, int column, int row) {
-        // Correcting variable usage according to their meaning
         int middleColumn = (column - 1) / 2;
         int bottomRow = row - 1;
         return (int) Math.pow((x - middleColumn), 2) + (int) Math.pow((y - bottomRow), 2);  
