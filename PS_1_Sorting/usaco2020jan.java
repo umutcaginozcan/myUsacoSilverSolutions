@@ -56,4 +56,3 @@ public class usaco2020jan {
         pw.close();
     }
 }
-
