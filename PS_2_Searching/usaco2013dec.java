@@ -21,11 +21,13 @@ public class usaco2013dec {
 
         int result = 0;
         for (int i = 0; i < N - 2; i++) {
+            outerloop:
             for (int j = i + 1; j < N - 1; j++) {
-                for (int k = j + 1; k < N; k++) {
+                for (int k = j + 1 ; k < N; k++) {
                     int dist1 = cow_locations[j] - cow_locations[i];
                     int dist2 = cow_locations[k] - cow_locations[j];
                     result += (dist2 >= dist1 && dist2 <= 2 * dist1) ? 1 : 0;
+                    if (dist2 >= dist1) continue outerloop;
                 }
             }
         }
