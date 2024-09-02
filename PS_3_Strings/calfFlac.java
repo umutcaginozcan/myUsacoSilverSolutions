@@ -6,9 +6,10 @@ public class calfFlac {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter the input string:");
         String input = scanner.nextLine();
 
+        int maxLen = 0;
+        String maxStr = "";
         // Iterate through chars (Our start index)
         for (int start = 0; start < input.length(); start++) {
 
@@ -17,12 +18,14 @@ public class calfFlac {
                 String substring = input.substring(start, end + 1);
                 String cleanedStr = cleanString(substring);
                 
-                if (isPalindrome(cleanedStr)) {
-                    System.out.println("Palindrome Length: " + (end - start + 1));
-                    System.out.println("Palindrome Substring: " + substring);
+                if (isPalindrome(cleanedStr) && cleanedStr.length() > maxLen) {
+                    maxLen = cleanedStr.length();
+                    maxStr = substring;
                 }
             }
         }
+        System.out.println(maxLen);
+        System.out.println(finalizer(maxStr));
     }
 
     public static String cleanString(String str) {
@@ -31,8 +34,25 @@ public class calfFlac {
     }
 
     public static boolean isPalindrome(String str) {
-        // Use StringBuilder to reverse the string and check if it matches the original
         String reversedStr = new StringBuilder(str).reverse().toString();
         return str.equals(reversedStr);
+    }
+
+    public static String finalizer(String maxStr) {
+        String str = maxStr.toLowerCase();
+        int start = 0, end = 0;
+        for (int i = 0; i < maxStr.length(); i++) {
+            if (str.charAt(i) - 'a' <= 31 && str.charAt(i) - 'a' >= 0) {
+                start = i;
+                break;
+            }
+        }
+        for (int i = maxStr.length() - 1; i >= 0; i--) {
+            if (str.charAt(i) - 'a' <= 31 && str.charAt(i) - 'a' >= 0) {
+                end = i;
+                break;
+            }
+        }
+        return maxStr.substring(start, end + 1);
     }
 }
