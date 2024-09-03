@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.StringTokenizer;
 
@@ -27,6 +28,9 @@ public class usaco2014feb {
             dictionary[i] = br.readLine();
         }
 
+        String[] sorted_dictionary = Arrays.copyOf(dictionary, W);
+        Arrays.sort(sorted_dictionary);
+
         while (N > 0) {
             N--;
             st = new StringTokenizer(br.readLine());
@@ -34,19 +38,16 @@ public class usaco2014feb {
             String prefix = st.nextToken();
 
             ArrayList<String> word_pool = new ArrayList<>();
-            for (String word : dictionary) {
+            for (String word : sorted_dictionary) {
                 if (word.startsWith(prefix)) {
                     word_pool.add(word);
                 }
             }
 
-            Collections.sort(word_pool);
-
             if (ith_word > word_pool.size()) {
                 pw.println(-1);
             } else {
                 String found_word = word_pool.get(ith_word - 1);
-                // Assuming you want the index in the original array (1-based index)
                 for (int i = 0; i < dictionary.length; i++) {
                     if (found_word.equals(dictionary[i])) {
                         pw.println(i + 1);
