@@ -38,9 +38,16 @@ public class usaco2014feb {
             String prefix = st.nextToken();
 
             ArrayList<String> word_pool = new ArrayList<>();
-            for (String word : sorted_dictionary) {
-                if (word.startsWith(prefix)) {
-                    word_pool.add(word);
+            int startIndex = Arrays.binarySearch(sorted_dictionary, prefix);
+            if (startIndex < 0) {
+                startIndex = Math.abs(startIndex + 1);
+            }
+
+            for (int i = startIndex; i < W; i++) {
+                if (sorted_dictionary[i].startsWith(prefix)) {
+                    word_pool.add(sorted_dictionary[i]);
+                } else {
+                    break;
                 }
             }
 
@@ -62,4 +69,3 @@ public class usaco2014feb {
         br.close();
     }
 }
-
