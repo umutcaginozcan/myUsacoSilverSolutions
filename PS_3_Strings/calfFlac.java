@@ -1,13 +1,15 @@
-package myUsacoSilverSolutions.PS_3_Strings;
-
 import java.util.Scanner;
 
 public class calfFlac {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        String input = scanner.nextLine();
-
+        String input = "";
+        while (scanner.hasNext()) {
+            String line = scanner.nextLine();
+            input += line + "\n";
+        }
+        
         int maxLen = 0;
         String maxStr = "";
         // Iterate through chars (Our start index)
