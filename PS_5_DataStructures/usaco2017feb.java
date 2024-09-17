@@ -4,59 +4,57 @@ import java.util.*;
 import java.io.*;
 
 public class usaco2017feb {
-    static class Cow implements Comparable<Cow> {
-        int end;
-        int start;
-
-        Cow(int start, int end) {
-            this.start = start;
-            this.end = end;
-        }
-
-        @Override
-		public int compareTo(Cow c) {
-			return start != c.start ? start - c.start : end - c.end;
-		}
-    }
-
     public static void main(String[] args) throws IOException {
-        BufferedReader fin = new BufferedReader(new FileReader("helpcross.in"));
-        PrintWriter fout = new PrintWriter(new BufferedWriter(new FileWriter("helpcross.out")));
+        BufferedReader br = new BufferedReader(new FileReader("helpcross.in"));
+        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("helpcross.out")));
 
-        StringTokenizer st = new StringTokenizer(fin.readLine());
+        StringTokenizer st = new StringTokenizer(br.readLine());
         int C = Integer.parseInt(st.nextToken());
         int N = Integer.parseInt(st.nextToken());
 
-        TreeSet<Integer> chickens = new TreeSet<>();
-        List<Cow> cows = new ArrayList<>();
-
+        TreeMap<Integer, Integer> ms = new TreeMap<>(); // multiset!
+        
         for (int i = 0; i < C; i++) {
-            chickens.add(Integer.parseInt(fin.readLine()));
+            int x = Integer.parseInt(br.readLine());
+            if (ms.containsKey(x)) 
+                ms.put(x, ms.get(x) + 1);
+            else 
+                ms.put(x, 1);
         }
         
+        ArrayList<ArrayList<Integer>> cows = new ArrayList<ArrayList<Integer> >();
         for (int i = 0; i < N; i++) {
-            st = new StringTokenizer(fin.readLine());
-            int start = Integer.parseInt(st.nextToken());
-            int end = Integer.parseInt(st.nextToken());
-            cows.add(new Cow(start, end));
+            cows.add(new ArrayList<Integer>());
+
+            st = new StringTokenizer(br.readLine());
+            int x1 = Integer.parseInt(st.nextToken());
+            int x2 = Integer.parseInt(st.nextToken());
+            cows.get(i).add(x1);
+            cows.get(i).add(x2);
         }
 
-        // Sorting cows based on their end times primarily
-        Collections.sort(cows);
+        Collections.sort(cows, (a,  b) -> {
+            if (a.get(1) == b.get(1))
+                return a.get(0) - b.get(0);
+            return a.get(1) - b.get(1);
+        });
+        
+        int count = 0;
+        for (ArrayList<Integer> cow: cows) {
+            int x1 = cow.get(0);
+            int x2 = cow.get(1);
 
-        int total = 0;
-        for (Cow cow : cows) {
-            // Finding the least chicken time that can help this cow
-            Integer availableChicken = chickens.ceiling(cow.start);
-            if (availableChicken != null && availableChicken <= cow.end) {
-                total++;
-                chickens.remove(availableChicken);
+            Integer x = ms.ceilingKey(x1);
+            if (x != null && x <= x2) {
+                count++;
+                if (ms.get(x) == 1) 
+                    ms.remove(x);
+                else
+                    ms.put(x, ms.get(x) - 1);
             }
         }
 
-        fout.println(total);
-        fout.close();
+        pw.println(count);
+        pw.close();
     }
 }
-
-
