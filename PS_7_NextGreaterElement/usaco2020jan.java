@@ -4,8 +4,7 @@ public class usaco2020jan {
     static long ans = 0;
     static int N;
 
-    // Monotonic Stack Approach Translated from C++
-    static void addContributionMonotonicStack(int[] h) {
+    static void add(int[] h) {
         Deque<Integer> stack = new ArrayDeque<>();
         for (int i = N - 1; i >= 0; --i) {
             while (!stack.isEmpty() && h[stack.peek()] < h[i]) {
@@ -27,11 +26,11 @@ public class usaco2020jan {
         }
 
         // Apply monotonic stack method for the forward pass
-        addContributionMonotonicStack(h);
+        add(h);
         // Reverse the array for the backward pass
         reverse(h);
         // Apply monotonic stack method for the reversed array
-        addContributionMonotonicStack(h);
+        add(h);
 
         System.out.println(ans);
     }
