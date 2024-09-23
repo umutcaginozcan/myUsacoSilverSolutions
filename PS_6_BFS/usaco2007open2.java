@@ -2,15 +2,6 @@ import java.io.*;
 import java.util.*;
 
 public class usaco2007open2 {
-    static class Pair {
-        int first;
-        int second;
-        Pair(int first, int second) {
-            this.first = first;
-            this.second = second;
-        }
-    }
-    
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out)));
@@ -23,7 +14,6 @@ public class usaco2007open2 {
             grid[i] = br.readLine().toCharArray();
         }
 
-        int[][] bfs = new int[R][C];
         int cowr = 0, cowc = 0, barnr = 0, barnc = 0;
         for (int i = 0; i < R; i++) {
             for (int j = 0; j < C; j++) {
@@ -37,28 +27,38 @@ public class usaco2007open2 {
                 }
             }
         }
+        
+        Queue<Integer> qx = new LinkedList<>();
+        Queue<Integer> qy = new LinkedList<>();
+        int[][] dp = new int[R][C];
+        // Initial State
+        qx.add(cowr);
+        qy.add(cowc);
+        dp[cowr][cowc] = 1;
 
-        Queue<Pair> visitNeighbours = new LinkedList<>();
-        visitNeighbours.add(new Pair(cowr, cowc));
-        bfs[cowr][cowc] = 1;
+        int[] xdif = {-1, 0, 1, 0};
+        int[] ydif = {0, 1, 0, -1};
 
-        while (!visitNeighbours.isEmpty()) {
-            Pair current = visitNeighbours.poll();
-            int currentr = current.first;
-            int currentc = current.second;
+        while (!qx.isEmpty()) {
+            int x = qx.poll();
+            int y = qy.poll();
 
-            int[][] neighbors = {{currentr - 1, currentc}, {currentr, currentc - 1},
-                {currentr + 1, currentc}, {currentr, currentc + 1}};
+            for (int i = 0; i < 4; i++) {
+                int xx = x + xdif[i];
+                int yy = y + ydif[i];
 
-            for (int[] neighbor : neighbors) {
-                if (neighbor[0] < 0 || neighbor[0] >= R || neighbor[1] < 0 || neighbor[1] >= C || 
-                    grid[neighbor[0]][neighbor[1]] == '*' || bfs[neighbor[0]][neighbor[1]] != 0) continue;
-                bfs[neighbor[0]][neighbor[1]] = bfs[currentr][currentc] + 1;
-                visitNeighbours.add(new Pair(neighbor[0], neighbor[1]));
+                if (xx < 0 || xx >= R || yy < 0 || yy >= C) 
+                    continue;
+
+                if (grid[xx][yy] != '*' && dp[xx][yy] == 0) {
+                    dp[xx][yy] = dp[x][y] + 1;
+                    qx.add(xx);
+                    qy.add(yy);
+                }
             }
         }
 
-        pw.println(bfs[barnr][barnc] - 1); // Subtract one to not count the ending cell
+        pw.println(dp[barnr][barnc] - 1); // Subtract one to not count the ending cell
         pw.close();
     }
 }
