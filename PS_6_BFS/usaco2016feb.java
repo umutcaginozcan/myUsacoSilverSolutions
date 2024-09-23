@@ -12,51 +12,70 @@ public class usaco2016feb {
         int K = Integer.parseInt(st.nextToken());  
         int M = Integer.parseInt(st.nextToken());  
 
-        Queue<Pair<Integer, Integer>> q = new LinkedList<>();
-        boolean[][] visited = new boolean[X+1][Y+1]; 
-        q.add(new Pair<>(0, 0));
-        visited[0][0] = true;
+        Queue<Integer> qX = new LinkedList<>();
+        Queue<Integer> qY = new LinkedList<>();
+        int[][] step = new int[X+1][Y+1]; 
+        Arrays.fill(step, -1);
+        // Initial state
+        step[0][0] = 0;
+        qX.add(0);
+        qY.add(0);
 
-        int bestDiff = Math.abs(M); 
+        while (!qX.isEmpty()) {
+            int x = qX.poll();
+            int y = qY.poll();
 
-        while (!q.isEmpty() && K-- > 0) {
-            int size = q.size();
-            for (int i = 0; i < size; i++) {
-                Pair<Integer, Integer> currentPair = q.poll();
-                int curX = currentPair.first;
-                int curY = currentPair.second;
+            if (step[x][y] >= K)
+                continue; // Continue with the next element in the queue
 
-                int[][] nextStates = new int[][] {
-                    {X, curY}, {curX, Y}, {0, curY}, {curX, 0},
-                    {Math.max(0, curX - (Y - curY)), Math.min(Y, curY + curX)},
-                    {Math.min(X, curX + curY), Math.max(0, curY - (X - curX))}
-                };
+            // Transitions
+            // 1) Empty X
+            int xx = 0;
+            int yy = y;
+            if (step[xx][yy] < 0) {
+                step[xx][yy] = step[x][y] + 1;
+                qX.add(xx);
+                qY.add(yy);
+            }
 
-                for (int[] state : nextStates) {
-                    if (!visited[state[0]][state[1]]) {
-                        visited[state[0]][state[1]] = true;
-                        q.add(new Pair<>(state[0], state[1]));
-                        int totalMilk = state[0] + state[1];
-                        int diff = Math.abs(M - totalMilk);
-                        if (diff < bestDiff) {
-                            bestDiff = diff;  /
-                        }
-                    }
+            // 2) Empty Y
+            
+            // 3) Full X
+            xx = X;
+            yy = y;
+            if (step[xx][yy] < 0) {
+                step[xx][yy] = step[x][y] + 1;
+                qX.add(xx);
+                qY.add(yy);
+            }
+
+            // 4) Full Y
+
+            // 5) X -> Y
+            int val = Math.min(x, Y - y);
+            xx = x - val;
+            yy = y + val;
+            if (step[xx][yy] < 0) {
+                step[xx][yy] = step[x][y] + 1;
+                qX.add(xx);
+                qY.add(yy);
+            }
+
+            // 6) Y -> X
+        }
+
+        int best = M;
+        for (int i = 0; i <= X; i++) {
+            for (int j = 0; j <= Y; j++) {
+                if (step[i][j] >= 0) {
+                    int cur = i + j;
+                    best = Math.min(best, Math.abs(M - cur));
                 }
             }
         }
 
-        pw.println(bestDiff);
+        pw.println(best);
         pw.close();
         br.close();
-    }
-
-    static class Pair<X, Y> {
-        public X first;
-        public Y second;
-        Pair(X first, Y second) {
-            this.first = first;
-            this.second = second;
-        }
     }
 }
