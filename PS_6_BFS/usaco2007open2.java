@@ -57,8 +57,39 @@ public class usaco2007open2 {
                 }
             }
         }
+        
+        // Printing the path
+        ArrayList<int[]> XY = new ArrayList<>();
+        int x = barnr;
+        int y = barnc;
+        int K = dp[barnr][barnc];
+        while (K > 1) {
+            XY.add(new int[]{x, y});
+            System.out.println(K);
 
-        pw.println(dp[barnr][barnc] - 1); // Subtract one to not count the ending cell
+            for (int i = 0; i <= 3; i++) {
+                int xx = x + xdif[i];
+                int yy = y + ydif[i];
+
+                if (xx < 0 || xx >= R || yy < 0 || yy >= C)
+                    continue;
+                
+                if (dp[xx][yy] == K - 1) {
+                    x = xx;
+                    y = yy;
+                    K--;
+                    break;
+                }
+            }
+        }
+        
+        XY.add(new int[]{x, y});
+        
+        System.out.println(dp[barnr][barnc] - 1);
+        Collections.reverse(XY);
+        for (int[] arr: XY) {
+            System.out.println(arr[0] + " " + arr[1]);
+        }
         pw.close();
     }
 }
