@@ -13,11 +13,13 @@ public class Histogram {
         int maxArea = 0;
 
         for (int i = 0; i < N; i++) {
+            // Compute the areas
             while (!indexStack.isEmpty() && rectangles[indexStack.peek()] > rectangles[i]) {
                 int height = rectangles[indexStack.pop()];
                 int width = indexStack.isEmpty() ? i : i - indexStack.peek() - 1;
                 maxArea = Math.max(maxArea, height * width);
             }
+            // Push new rectangle, if increasing.
             indexStack.push(i);
         }
 
