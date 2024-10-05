@@ -7,9 +7,8 @@ public class usaco2013marchP3 {
     static int[] cows;
     static int N;
     static int K;
-    static String[] relations;
-    static int[] c1;
-    static int[] c2;
+    static int res;
+    static char[][] R;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader("assign.in"));
@@ -18,56 +17,44 @@ public class usaco2013marchP3 {
         StringTokenizer st = new StringTokenizer(br.readLine());
         N = Integer.parseInt(st.nextToken()); // no of cows
         K = Integer.parseInt(st.nextToken()); // no of relations
+        R = new char[N + 1][N + 1];
         
-        relations = new String[K];
-        c1 = new int[K];
-        c2 = new int[K];
         for (int i = 0; i < K; i++) {
             st = new StringTokenizer(br.readLine());
-            relations[i] = st.nextToken();
-            c1[i] = Integer.parseInt(st.nextToken()) - 1; // Adjusting for 0-based index
-            c2[i] = Integer.parseInt(st.nextToken()) - 1; // Adjusting for 0-based index
+            char ch = st.nextToken().charAt(0);
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
+            R[a][b] = ch;
+            R[b][a] = ch;
         }
 
-        int res[] = {0};
-        cows = new int[N];
-        go(cows, 0, res);
+        cows = new int[N + 1];
+        go(1);
 
-        pw.println(res[0]);
+        pw.println(res);
         pw.close();
     }
 
-    public static void go(int[] cows, int start, int[] res) {
-        if (start >= cows.length) {
-            if (isValid(cows))
-                res[0]++;
+    public static void go(int start) {
+        if (start > N) {
+            res++;
             return;
         }
     
         for (int i = 1; i <= 3; i++) {
             cows[start] = i;
-            if (isValidSoFar(cows, start)) {  // Early check for validity up to the current index
-                go(cows, start + 1, res);
+            if (isValidSoFar(start)) {  // Early check for validity up to the current index
+                go(start + 1);
             }
         }
     }
 
-    public static boolean isValid(int[] cows) {
-        for (int i = 0; i < K; i++) {
-            if ((relations[i].equals("S") && cows[c1[i]] != cows[c2[i]])
-                || (relations[i].equals("D") && cows[c1[i]] == cows[c2[i]]))
+    public static boolean isValidSoFar(int end) {
+        for (int i = 1; i < end; i++) {
+            if (R[i][end] == 'S' && cows[i] != cows [end])
                 return false;
-        }
-        return true;
-    }
-
-    public static boolean isValidSoFar(int[] cows, int end) {
-        for (int i = 0; i < K; i++) {
-            if (c1[i] <= end && c2[i] <= end) {
-                if ((relations[i].equals("S") && cows[c1[i]] != cows[c2[i]])
-                    || (relations[i].equals("D") && cows[c1[i]] == cows[c2[i]]))
-                    return false;
-            }
+            if (R[i][end] == 'D' && cows[i] == cows [end])
+                return false;
         }
         return true;
     }
