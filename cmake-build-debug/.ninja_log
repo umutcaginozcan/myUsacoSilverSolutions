@@ -1,0 +1,7 @@
+# ninja log v6
+1	251	1728480949194710796	CMakeFiles/myUsacoSilverSolutions.dir/PS_8_Recursion/usaco2012jan.cpp.o	4374f1f1ad59fa95
+1	235	1728480949194467754	CMakeFiles/myUsacoSilverSolutions.dir/PS_10_DivideAndConquer/MergeSort.cpp.o	bdc7bc8c00b6677d
+0	224	1728480949194236587	CMakeFiles/myUsacoSilverSolutions.dir/PS_10_DivideAndConquer/FindMax.cpp.o	14af57f1e2e77e4b
+1	223	1728480949194593338	CMakeFiles/myUsacoSilverSolutions.dir/PS_10_DivideAndConquer/TrueFindMax.cpp.o	39bf6b269d2cf48d
+2	38	1728480976527587870	build.ninja	be02d668d1a84b1f
+5	43	1728480976537744354	myUsacoSilverSolutions	f7d2d71321e444d0

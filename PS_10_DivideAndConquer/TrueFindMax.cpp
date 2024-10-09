@@ -20,7 +20,7 @@ int findMax(int a[], int lo, int hi) {
     int rightMax = findMax(a, mid + 1, hi);
     // Return the maximum element from the left and right
     // half
-    return max(leftMax, rightMax);
+    return min(leftMax, rightMax);
 }
 
 int main() {
