@@ -2,9 +2,6 @@
 #include <vector> // Include for std::vector
 using namespace std;
 
-// Merges two subarrays of arr[].
-// First subarray is arr[left..mid]
-// Second subarray is arr[mid+1..right]
 void merge(vector<int>& arr, int left, int mid, int right)
 {
     int n1 = mid - left + 1;
@@ -64,10 +61,10 @@ void mergeSort(vector<int>& arr, int left, int right)
 }
 
 // Function to print a vector
-void printVector(vector<int>& arr)
+void printVector(const vector<int>& arr)
 {
-    for (int i = 0; i < arr.size(); i++)
-        cout << arr[i] << " ";
+    for (const int i : arr)
+        cout << i << " ";
     cout << endl;
 }
 
