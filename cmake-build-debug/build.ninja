@@ -49,8 +49,8 @@ cmake_ninja_workdir = /Users/umutcaginozcan/Desktop/USACO/myUsacoSilverSolutions
 
 build cmake_object_order_depends_target_myUsacoSilverSolutions: phony || .
 
-build CMakeFiles/myUsacoSilverSolutions.dir/PS_10_DivideAndConquer/MergeSort.cpp.o: CXX_COMPILER__myUsacoSilverSolutions_unscanned_Debug /Users/umutcaginozcan/Desktop/USACO/myUsacoSilverSolutions/PS_10_DivideAndConquer/MergeSort.cpp || cmake_object_order_depends_target_myUsacoSilverSolutions
-  DEP_FILE = CMakeFiles/myUsacoSilverSolutions.dir/PS_10_DivideAndConquer/MergeSort.cpp.o.d
+build CMakeFiles/myUsacoSilverSolutions.dir/PS_10_DivideAndConquer/QuickSort.cpp.o: CXX_COMPILER__myUsacoSilverSolutions_unscanned_Debug /Users/umutcaginozcan/Desktop/USACO/myUsacoSilverSolutions/PS_10_DivideAndConquer/QuickSort.cpp || cmake_object_order_depends_target_myUsacoSilverSolutions
+  DEP_FILE = CMakeFiles/myUsacoSilverSolutions.dir/PS_10_DivideAndConquer/QuickSort.cpp.o.d
   FLAGS = -g -std=gnu++14 -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk -fcolor-diagnostics
   OBJECT_DIR = CMakeFiles/myUsacoSilverSolutions.dir
   OBJECT_FILE_DIR = CMakeFiles/myUsacoSilverSolutions.dir/PS_10_DivideAndConquer
@@ -63,7 +63,7 @@ build CMakeFiles/myUsacoSilverSolutions.dir/PS_10_DivideAndConquer/MergeSort.cpp
 #############################################
 # Link the executable myUsacoSilverSolutions
 
-build myUsacoSilverSolutions: CXX_EXECUTABLE_LINKER__myUsacoSilverSolutions_Debug CMakeFiles/myUsacoSilverSolutions.dir/PS_10_DivideAndConquer/MergeSort.cpp.o
+build myUsacoSilverSolutions: CXX_EXECUTABLE_LINKER__myUsacoSilverSolutions_Debug CMakeFiles/myUsacoSilverSolutions.dir/PS_10_DivideAndConquer/QuickSort.cpp.o
   FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
   OBJECT_DIR = CMakeFiles/myUsacoSilverSolutions.dir
   POST_BUILD = :

@@ -91,7 +91,7 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "PS_10_DivideAndConquer/MergeSort.cpp",
+			"path" : "PS_10_DivideAndConquer/QuickSort.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],
