@@ -14,7 +14,7 @@ public class Sleepy {
 
         int j = 0, best = 0;
         for (int i = 0; i < N; i++) {
-            while (j < N - 1 && A[j + 1] - A[i] <= N - 1) j++;
+            while (j < N - 1 && A[j + 1] - A[i] <= N - 1) j++; // J counts the number of cows that doesn't need to move.
             best = Math.max(best, j - i + 1);
         }
         return N - best;
