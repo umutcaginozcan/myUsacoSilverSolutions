@@ -6,29 +6,29 @@ public class usaco2017dec {
     static int[] nextState;
     static int[] countNode;
     static int res;
+    static int cnt;
 
-    public static void dfs(int cur, int cnt) {
+    public static void dfs(int cur, int flag) {
         
-        if (countNode[cur] != 0) 
-            return;
-        
-        countNode[cur] = cnt;
-
-        int next = nextState[cur];
-        // There is already an accumulation where cur points at. (To save time)
-        if (countNode[next] != 0 && countNode[cur] <= countNode[next] && next != cur)
-            return;
-
-        if (next == cur) {
-            res++;
-            return;
+        if (flag == 1) {
+            if (countNode[cur] > 0) {
+                countNode[cur] = -1;
+                dfs(nextState[cur], 1);
+            }
         }
-        // Cycle detected, increment res.
-        if (countNode[next] < countNode[cur] && countNode[next] != 0) {
-            res += countNode[cur] - countNode[next] + 1;
-            return;
+        else {
+            countNode[cur] = cnt;
+            cnt++;
+    
+            int next = nextState[cur];
+            if (countNode[next] == 0)
+                dfs(next, 0);
+    
+            else if (countNode[next] > 0) 
+                res += countNode[cur] - countNode[next] + 1;
+            
         }
-        dfs(next, cnt + 1);
+
     }
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader("shuffle.in"));
@@ -40,13 +40,17 @@ public class usaco2017dec {
         countNode = new int[N + 1];
 
         st = new StringTokenizer(br.readLine());
-        for (int i = 0; i < N; i++) {
-            nextState[i + 1] = Integer.parseInt(st.nextToken());
+        for (int i = 1; i <= N; i++) {
+            nextState[i] = Integer.parseInt(st.nextToken());
         }
 
         // For each node, implement dfs.
         for (int i = 1; i <= N; i++) {
-            dfs(i, 1);
+            if (countNode[i] == 0) {
+                cnt = 1;
+                dfs(i, 0);
+                dfs(i, 1);
+            }
         }
 
         pw.println(res);
