@@ -1,69 +1,67 @@
+#include <cstdio>
 #include <iostream>
-#include <vector>
-#include <algorithm>
-#include <fstream>
-
+#include <bits/stdc++.h>
 using namespace std;
 
-#define NMAX 100005
-
 struct Event {
-    int x;     // Bu "event"in konumu
-    int inc;   // Konumda katman sayısını +1 veya -1 arttıracak mı
-    bool operator<(Event const& e) const {
-        return x < e.x; // Event’leri konumlarına göre sıralayacağız
+    int x;
+    int LR;
+    bool operator<(const Event &other) const {
+        return x < other.x;
     }
 };
 
 int main() {
-    ifstream input("paint.in");
-    ofstream output("paint.out");
+    freopen("paint.in",  "r", stdin);
+    freopen("paint.out", "w", stdout);
 
-    int n, k;
-    input >> n >> k;
+    int N, K;
+    cin >> N >> K;
 
-    vector<Event> events(2 * n);
+    vector<Event> events;
+    events.reserve(2*N);
 
-    int x = 0; // Bessie'nin anlık konumu; başlangıçta 0
-
-    for (int i = 0; i < n; i++) {
+    int curx = 0;
+    for(int i = 0; i < N; i++) {
         int dist;
-        char c;
-        input >> dist >> c;
+        char dir;
+        cin >> dist >> dir;
 
-        // Yeni konum:
-        int x1 = x + dist * (c == 'L' ? -1 : 1);
+        Event e1;
+        e1.x  = curx;
+        Event e2;
 
-        // Daha küçük ve büyük konumları buluyoruz
-        int left  = min(x, x1);
-        int right = max(x, x1);
+        if (dir == 'R') {
+            e1.LR =  1;
+            e2.LR = -1;
+            e2.x  = curx + dist;
+        } else {
+            e1.LR = -1;
+            e2.LR =  1;
+            e2.x  = curx - dist;
+        }
+        curx = e2.x;
 
-        // events dizisine, bu aralığın başlangıcında +1,
-        // bitişinde -1 olacak şekilde iki event ekliyoruz
-        events[2 * i] = {left, 1};
-        events[2 * i + 1] = {right, -1};
-
-        // Bessie’nin konumu, x1'e güncelleniyor
-        x = x1;
+        events.push_back(e1);
+        events.push_back(e2);
     }
-
-    // Event'leri (aralık başlangıç ve bitiş noktalarını) x'e göre sıralıyoruz
     sort(events.begin(), events.end());
 
-    int nCoats = 0;   // Şu anki katman sayısı
-    int answer = 0;   // En az K kat boyalı toplam mesafe
+    long long answer = 0;
+    long long fold = 0;
+    int prevX = events[0].x;
 
-    for (size_t i = 0; i < events.size(); i++) {
-        if (i > 0 && nCoats >= k) {
-            // events[i].x (şimdiki konum) - events[i-1].x (bir önceki konum)
-            // arada geçen mesafeyi topluyoruz
-            answer += (events[i].x - events[i - 1].x);
+    for (int i = 0; i < (int)events.size(); i++) {
+        int nowX = events[i].x;
+
+        if (fold >= K) {
+            answer += (long long)nowX - prevX;
         }
-        // nCoats'ı bu event'in inc değeri kadar güncelliyoruz
-        nCoats += events[i].inc;
+        
+        fold += events[i].LR;
+        prevX = nowX;
     }
 
-    output << answer << endl;
-
+    cout << answer << endl;
     return 0;
 }
