@@ -1,87 +1,125 @@
 #include <iostream>
-#include <fstream>
 #include <vector>
+#include <set>
 #include <algorithm>
+#include <fstream>
+
 using namespace std;
+typedef long long LL;
 
 struct Point {
-    int x, y;
-    // Returns the determinant of the 3x3 matrix formed by points (this, p2, p3)
-    int orientation(const Point &p2, const Point &p3) const {
-        return (x * p2.y - p2.x * y)
-             + (p2.x * p3.y - p3.x * p2.y)
-             + (p3.x * y - x * p3.y);
-    }
+    LL x, y;
+    int segindex;
 };
 
-// Returns true if point q lies on segment pr
-bool onSegment(const Point &p, const Point &q, const Point &r) {
-    return (q.x <= max(p.x, r.x) && q.x >= min(p.x, r.x) &&
-            q.y <= max(p.y, r.y) && q.y >= min(p.y, r.y));
-}
-
-struct LineSegment {
-    Point p1, p2;
-
-    // Returns true if this segment intersects segment L2
-    bool intersects(const LineSegment &L2) const {
-        int o1 = p1.orientation(p2, L2.p1);
-        int o2 = p1.orientation(p2, L2.p2);
-        int o3 = L2.p1.orientation(L2.p2, p1);
-        int o4 = L2.p1.orientation(L2.p2, p2);
-
-        // General case: segments straddle each other.
-        if (o1 * o2 < 0 && o3 * o4 < 0)
-            return true;
-
-        // Special cases: check for collinearity.
-        if (o1 == 0 && onSegment(p1, L2.p1, p2)) return true;
-        if (o2 == 0 && onSegment(p1, L2.p2, p2)) return true;
-        if (o3 == 0 && onSegment(L2.p1, p1, L2.p2)) return true;
-        if (o4 == 0 && onSegment(L2.p1, p2, L2.p2)) return true;
-
-        return false;
-    }
+struct Segment {
+    Point p, q;
+    int index;
 };
 
-// Comparator function to sort based on p1.x values
-bool compareLineSegments(const LineSegment &a, const LineSegment &b) {
-    return a.p1.x < b.p1.x;
+bool operator<(Point p1, Point p2) {
+    return (p1.x == p2.x) ? (p1.y < p2.y) : (p1.x < p2.x);
 }
+
+int sign(LL x) {
+    return (x == 0) ? 0 : (x < 0 ? -1 : 1);
+}
+
+int operator*(Point p1, Point p2) {
+    return sign(p1.x * p2.y - p1.y * p2.x);
+}
+
+Point operator-(Point p1, Point p2) {
+    return {p1.x - p2.x, p1.y - p2.y};
+}
+
+bool isect(Segment &s1, Segment &s2) {
+    Point &p1 = s1.p, &q1 = s1.q, &p2 = s2.p, &q2 = s2.q;
+    return ((q2 - p1) * (q1 - p1)) * ((q1 - p1) * (p2 - p1)) >= 0 &&
+           ((q1 - p2) * (q2 - p2)) * ((q2 - p2) * (p1 - p2)) >= 0;
+}
+
+double x; // Current sweep line position
+
+double eval(Segment s) {
+    if (s.p.x == s.q.x) return s.p.y;
+    return s.p.y + (s.q.y - s.p.y) * (x - s.p.x) / (s.q.x - s.p.x);
+}
+
+bool operator<(Segment s1, Segment s2) {
+    return s1.index != s2.index && eval(s1) < eval(s2);
+}
+
+int N;
+vector<Segment> segments;
+vector<Point> points;
 
 int main() {
     ifstream fin("cowjump.in");
     ofstream fout("cowjump.out");
 
-    int N;
     fin >> N;
-    vector<LineSegment> lsegments;
+    segments.resize(N);
+    points.reserve(2 * N);
 
     for (int i = 0; i < N; i++) {
-        Point p1, p2;
-        fin >> p1.x >> p1.y >> p2.x >> p2.y;
-        // Ensure that p1 is the leftmost point
-        if (p1.x > p2.x) swap(p1, p2);
-        lsegments.push_back({p1, p2});
+        Segment s;
+        fin >> s.p.x >> s.p.y >> s.q.x >> s.q.y;
+        s.index = s.p.segindex = s.q.segindex = i;
+        segments[i] = s;
+        points.push_back(s.p);
+        points.push_back(s.q);
     }
 
-    // Sort segments by their starting x-coordinate
-    sort(lsegments.begin(), lsegments.end(), compareLineSegments);
+    sort(points.begin(), points.end());
 
-    int ans = -1;
-    // For each segment, count how many later segments it intersects.
-    for (int i = 0; i < N; i++) {
-        int cnt = 0;
-        for (int j = i + 1; j < N; j++) {
-            // If the next segment's starting x-coordinate is beyond
-            // the current segment's ending x-coordinate, no intersection is possible.
-            if (lsegments[j].p1.x > lsegments[i].p2.x) break;
-            if (lsegments[i].intersects(lsegments[j])) cnt++;
+    set<Segment> active;
+    int ans1 = -1, ans2 = -1;
+
+    for (int i = 0; i < 2 * N; i++) {
+        ans1 = points[i].segindex;
+        x = points[i].x;
+
+        auto it = active.find(segments[ans1]);
+        if (it != active.end()) {
+            auto after = it, before = it;
+            after++;
+            if (before != active.begin() && after != active.end()) {
+                before--;
+                if (isect(segments[before->index], segments[after->index])) {
+                    ans1 = before->index;
+                    ans2 = after->index;
+                    break;
+                }
+            }
+            active.erase(it);
+        } else {
+            auto it = active.lower_bound(segments[ans1]);
+            if (it != active.end() && isect(segments[it->index], segments[ans1])) {
+                ans2 = it->index;
+                break;
+            }
+            if (it != active.begin()) {
+                it--;
+                if (isect(segments[it->index], segments[ans1])) {
+                    ans2 = it->index;
+                    break;
+                }
+            }
+            active.insert(segments[ans1]);
         }
-        ans = max(ans, cnt);
-        if (ans > 1) break;
     }
 
-    fout << ans << endl;
+    if (ans1 > ans2) swap(ans1, ans2);
+    int ans2_count = 0;
+
+    for (int i = 0; i < N; i++) {
+        if (segments[i].index != ans2 && isect(segments[i], segments[ans2])) {
+            ans2_count++;
+        }
+    }
+
+    fout << (ans2_count > 1 ? ans2 + 1 : ans1 + 1) << "\n";
+
     return 0;
 }
